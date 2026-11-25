@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teknik Servis · Ekspa</title>
+<style>
+/* Layout: sticky header with tabs; each view in <main>; ticket detail in a right drawer. */
+:root{
+  --bg:#F2F5F8; --surface:#FFFFFF; --sunk:#E8EDF2; --ink:#13202C; --muted:#5A6B7B; --line:#D6DEE6;
+  --accent:#1F5E8C; --accent-ink:#FFFFFF; --accent-soft:#DCEAF5;
+  --ok:#1C7A4B; --ok-soft:#DDF1E6; --warn:#9A6212; --warn-soft:#FBEBD2; --bad:#B3261E; --bad-soft:#FADCD9;
+  --shadow:0 1px 2px rgba(19,32,44,.06),0 2px 8px rgba(19,32,44,.06);
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0E151C; --surface:#16212B; --sunk:#111A22; --ink:#E4ECF3; --muted:#93A5B6; --line:#273542;
+  --accent:#6EA7D6; --accent-ink:#0E151C; --accent-soft:#1B3347;
+  --ok:#5BC48C; --ok-soft:#163327; --warn:#E3A953; --warn-soft:#3A2B14; --bad:#F08C84; --bad-soft:#3D1D1B;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar1{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:10px}
+.brand h1{font-family:var(--f-display);font-size:21px;font-weight:700;margin:0}
+.tabs{display:flex;flex-wrap:wrap;gap:2px;background:var(--sunk);border-radius:8px;padding:3px;margin-left:auto}
+.tabs a{padding:6px 11px;border-radius:6px;text-decoration:none;color:var(--muted);font-weight:500;font-size:13px}
+.tabs a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.tabs a.new{color:var(--accent);font-weight:600}
+main{padding-block:16px 48px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 12px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.status{font-size:12px;color:var(--muted)}
+.status.err{color:var(--bad)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:28px;text-align:center;color:var(--muted);max-width:620px;margin:32px auto}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar input[type=search]{flex:1 1 240px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.toolbar select{padding:7px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);max-width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chips b{font-family:var(--f-mono);font-weight:500;margin-left:4px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap;background:var(--sunk);color:var(--muted)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.bad{background:var(--bad-soft);color:var(--bad)} .chip.blue{background:var(--accent-soft);color:var(--accent)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--sunk);white-space:nowrap}
+tbody tr.click{cursor:pointer} tbody tr.click:hover{background:var(--accent-soft)}
+td .sub{font-size:12px;color:var(--muted)}
+td.r,th.r{text-align:right}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.kpi .v{font-family:var(--f-display);font-size:26px;font-weight:700}
+.kpi .s{font-size:12px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}
+.panel h3{font-family:var(--f-display);font-size:16px;font-weight:600;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
+.panel .pb{padding:14px}
+.note{font-size:12px;color:var(--muted);padding:8px 14px}
+.bar{display:flex;align-items:center;gap:10px;padding:6px 14px}
+.bar span:first-child{width:190px;flex:none;font-size:13px}
+.bar .track{flex:1;height:10px;background:var(--sunk);border-radius:5px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:var(--accent)}
+.bar b{width:36px;text-align:right;font-family:var(--f-mono);font-weight:500}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;min-width:0}
+label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing:0;font-weight:400;font-size:14px;color:var(--ink);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg);width:100%;min-width:0}
+label.chk{display:flex;align-items:center;gap:8px;font-size:13px}
+textarea{resize:vertical}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fgrid .w{grid-column:1/-1}
+.sec{font-family:var(--f-display);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:6px 0 6px}
+/* serial check */
+.check{display:flex;gap:8px;flex-wrap:wrap}
+.check input{flex:1 1 260px;font-family:var(--f-mono);font-size:18px;padding:10px 12px;border:2px solid var(--line);border-radius:9px;background:var(--surface);text-transform:uppercase;min-width:0}
+.check .btn{font-size:15px;padding:10px 18px}
+.prod{border:2px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:6px;cursor:pointer;text-align:left;width:100%}
+.prod[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.prod.okb{border-left:6px solid var(--ok)} .prod.badb{border-left:6px solid var(--bad)} .prod.warnb{border-left:6px solid var(--warn)}
+.prod .t{font-weight:600}
+.verdict{border-radius:10px;padding:12px 14px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)} .verdict.bad{background:var(--bad-soft);color:var(--bad)} .verdict.warn{background:var(--warn-soft);color:var(--warn)}
+.verdict small{display:block;font-weight:400;color:var(--ink);margin-top:2px}
+.steps{display:flex;flex-direction:column;gap:16px;max-width:900px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,18,26,.35);z-index:20}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(780px,100%);background:var(--surface);z-index:21;display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.dh{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--line)}
+.dh h2{font-family:var(--f-display);font-size:20px;margin:0;overflow-wrap:anywhere}
+.db{overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:14px}
+.df{display:flex;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.df .status{margin-right:auto}
+.stagebar{display:flex;flex-wrap:wrap;gap:4px}
+.stagebar button{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer}
+.stagebar button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px}
+.info div span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.timeline li{border-left:3px solid var(--line);padding:2px 0 2px 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.timeline li.k-asama{border-color:var(--accent)} .timeline li.k-yorum{border-color:var(--ok)} .timeline li.k-not{border-color:var(--warn)}
+.timeline .by{font-size:11px;color:var(--muted);white-space:normal}
+.mail{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+.mail summary{cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mail pre{white-space:pre-wrap;font-family:var(--f-mono);font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin:8px 0 0;max-height:280px;overflow:auto}
+.usr{position:relative}
+.usr>.btn{display:flex;align-items:center;gap:8px;padding:5px 10px}
+.av{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:600}
+.menu{position:absolute;right:0;top:calc(100% + 6px);min-width:220px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(19,32,44,.16);padding:6px;z-index:15;display:flex;flex-direction:column}
+.menu .mh{padding:8px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:12px;color:var(--muted)}
+.menu .mh b{display:block;color:var(--ink);font-size:14px}
+.menu button,.menu a{all:unset;cursor:pointer;padding:8px 10px;border-radius:6px;font-size:13px}
+.menu button:hover,.menu a:hover{background:var(--accent-soft)}
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:22;padding:16px}
+.modal .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;width:min(420px,100%);padding:20px;display:flex;flex-direction:column;gap:12px}
+.modal h2{font-family:var(--f-display);margin:0;font-size:20px}
+.errbox{background:var(--bad-soft);color:var(--bad);padding:8px 10px;border-radius:8px;font-size:13px}
+.inline{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.inline input,.inline select{padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:13px;min-width:0}
+.modsw{display:flex;gap:2px;background:var(--sunk);border-radius:8px;padding:3px}
+.modsw a{padding:5px 10px;border-radius:6px;text-decoration:none;color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.02em}
+.modsw a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30}
+@media (max-width:620px){.fgrid{grid-template-columns:1fr}.tabs{margin-left:0}.bar span:first-child{width:120px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar1 gut">
+    <div class="brand"><h1>Teknik Servis</h1></div>
+    <nav class="modsw" aria-label="Bölüm"><a href="/satis" data-mod="crm">Satış</a><a href="/servis" data-mod="servis">Teknik Servis</a></nav>
+    <nav class="tabs" aria-label="Bölümler">
+      <a href="#yeni" data-v="yeni" class="new">+ Yeni çağrı</a>
+      <a href="#cagrilar" data-v="cagrilar">Çağrılar</a>
+      <a href="#envanter" data-v="envanter">Envanter</a>
+      <a href="#firmalar" data-v="firmalar">Firmalar</a>
+      <a href="#ozet" data-v="ozet">Özet</a>
+      <a href="#eposta" data-v="eposta">E-postalar</a>
+    </nav>
+    <div class="usr">
+      <button class="btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false"><span class="av" id="meAv">?</span><span id="meName">…</span> ▾</button>
+      <div class="menu" id="userMenu" hidden>
+        <div class="mh"><b id="meFull"></b><span id="meRole"></span></div>
+        <button type="button" data-act="pw">Şifremi değiştir</button>
+        <a href="#ayarlar" class="adm" hidden>Ayarlar (e-posta, SLA)</a>
+        <a href="#kullanicilar" class="adm" hidden>Kullanıcıları yönet</a>
+        <button type="button" data-act="logout">Çıkış yap</button>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="gut" id="main"><div class="empty">Yükleniyor…</div></main>
+<div id="drawerHost"></div>
+<div id="modalHost"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtD=d=>d?`${d.slice(8,10)}.${d.slice(5,7)}.${d.slice(0,4)}`:'';
+const fmtDT=v=>v?new Date(v).toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'}):'';
+const initials=n=>(n||'?').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toLocaleUpperCase('tr');
+const S={me:null,view:'cagrilar',tickets:[],rev:-1,meta:null,experts:[],firms:null,stageF:'aktif',q:'',expF:'',firmaF:'',inv:{q:'',firma:'',durum:'',offset:0},open:null,users:null};
+let toastT;function toast(m){let el=$('.toast');if(!el){el=document.createElement('div');el.className='toast';el.setAttribute('role','status');document.body.append(el)}el.textContent=m;clearTimeout(toastT);toastT=setTimeout(()=>el.remove(),2600)}
+async function api(method,url,body){
+  const r=await fetch(url,{method,cache:'no-store',headers:{'Content-Type':'application/json','X-Requested-With':'fetch'},body:body?JSON.stringify(body):undefined});
+  if(r.status===401){location.href='/giris';throw{code:401,message:'Oturum kapandı'}}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw{code:r.status,message:j.error||'Sunucu hatası'};return j;
+}
+const canEdit=()=>S.me&&S.me.servisLevel>=2;
+const isAdmin=()=>S.me&&S.me.admin;
+function modSwitch(cur){document.querySelectorAll('.modsw a').forEach(a=>{const lv=S.me[a.dataset.mod+'Level'];a.hidden=!lv;if(a.dataset.mod===cur)a.setAttribute('aria-current','page')});
+  if(document.querySelectorAll('.modsw a:not([hidden])').length<2)document.querySelector('.modsw').hidden=true}
+
+const STG=()=>Object.fromEntries(S.meta.stages);
+const stageChip=t=>{const c=t.stage==='iptal'?'':t.closed?'ok':t.stage==='acik'?'blue':t.stage==='musteri_bekleniyor'||t.stage==='parca_siparis'?'warn':'blue';return`<span class="chip ${c}">${esc(STG()[t.stage]||t.stage)}</span>`};
+const WCHIP={kapsamda:['ok','Garanti kapsamında'],bitti:['bad','Garanti bitmiş'],baslamadi:['warn','Garanti başlamamış'],bilgi_yok:['warn','Garanti bilgisi yok']};
+const wChip=c=>c&&WCHIP[c]?`<span class="chip ${WCHIP[c][0]}">${WCHIP[c][1]}</span>`:'';
+const late=t=>!t.closed&&t.sla_due&&t.sla_due<S.meta.today;
+
+/* ---------------- Çağrılar ---------------- */
+function filteredTickets(){
+  const q=S.q.trim().toLocaleLowerCase('tr');
+  return S.tickets.filter(t=>(S.stageF==='aktif'?!t.closed:S.stageF==='geciken'?late(t):S.stageF==='tumu'?true:t.stage===S.stageF)
+    &&(!S.expF||t.assignee===S.expF||(S.expF==='__yok__'&&!t.assignee))&&(!S.firmaF||t.firma===S.firmaF)
+    &&(!q||[t.no,t.subject,t.firma,t.serial,t.contact_name,t.assignee_name,t.product?.part_no].join(' ').toLocaleLowerCase('tr').includes(q)));
+}
+function renderTickets(){
+  const cnt=k=>S.tickets.filter(t=>k==='aktif'?!t.closed:k==='geciken'?late(t):k==='tumu'?true:t.stage===k).length;
+  const chips=[['aktif','Aktif'],['geciken','Hedefi geçen'],...S.meta.stages,['tumu','Tümü']].filter(([k])=>['aktif','geciken','tumu'].includes(k)||cnt(k));
+  const firms=[...new Set(S.tickets.map(t=>t.firma).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));
+  const list=filteredTickets();
+  const PR=S.meta.priorities;
+  return`<div class="toolbar">
+    <input type="search" id="tq" placeholder="Çağrı no, konu, firma, seri no, kişi ara…" value="${esc(S.q)}" aria-label="Ara">
+    <select id="tExp" aria-label="Uzman"><option value="">Tüm uzmanlar</option>${S.experts.map(e=>`<option value="${esc(e.username)}" ${S.expF===e.username?'selected':''}>${esc(e.name)}</option>`).join('')}<option value="__yok__" ${S.expF==='__yok__'?'selected':''}>Atanmamış</option></select>
+    <select id="tFirma" aria-label="Firma"><option value="">Tüm firmalar</option>${firms.map(f=>`<option ${S.firmaF===f?'selected':''}>${esc(f)}</option>`).join('')}</select>
+    ${canEdit()?'<a class="btn primary" href="#yeni" style="text-decoration:none">+ Yeni çağrı</a>':''}
+  </div>
+  <div class="chips" role="group" aria-label="Aşama">${chips.map(([k,t])=>`<button type="button" data-sf="${k}" aria-pressed="${S.stageF===k}">${t}<b>${cnt(k)}</b></button>`).join('')}</div>
+  ${list.length?`<div class="tbl-wrap"><table><thead><tr><th>No</th><th>Konu / Firma</th><th>Ürün</th><th>Aşama</th><th>Öncelik</th><th>Uzman</th><th>Hedef</th><th>Güncelleme</th></tr></thead><tbody>
+  ${list.map(t=>`<tr class="click" data-tid="${t.id}" tabindex="0">
+    <td class="mono">${esc(t.no)}</td>
+    <td><b>${esc(t.subject)}</b><div class="sub">${esc(t.firma||'—')}${t.contact_name?' · '+esc(t.contact_name):''}</div></td>
+    <td>${t.serial?`<span class="mono">${esc(t.serial)}</span><div class="sub">${esc([t.product.brand,t.product.part_no].filter(Boolean).join(' '))}</div>`:'<span class="sub">—</span>'}${t.out_of_warranty?'<div><span class="chip bad">Garanti dışı</span></div>':''}</td>
+    <td>${stageChip(t)}</td>
+    <td>${t.priority==='acil'?'<span class="chip bad">Acil</span>':esc(PR[t.priority]||'')}</td>
+    <td>${esc(t.assignee_name||'—')}</td>
+    <td class="mono">${t.sla_due?`<span class="${late(t)?'chip bad':''}">${fmtD(t.sla_due)}</span>`:'—'}</td>
+    <td class="sub">${fmtDT(t.updated_at)}</td></tr>`).join('')}
+  </tbody></table></div>`:`<div class="empty">Bu filtrelerle eşleşen çağrı yok.</div>`}`;
+}
+
+/* ---------------- Yeni çağrı ---------------- */
+const NC={serial:'',res:null,sel:null,err:''};
+function renderNew(){
+  if(!canEdit())return`<div class="empty">Çağrı açma yetkiniz yok.</div>`;
+  const r=NC.res;
+  let results='';
+  if(r){
+    if(!r.matches.length){
+      results=`<div class="verdict bad">✕<div>Bu seri numarası envanterde bulunamadı: <span class="mono">${esc(r.serial)}</span><small>Çağrı yalnızca envanterde kayıtlı ürünler için açılabilir. Numarayı kontrol edin${canEdit()?' ya da ürünü Envanter ekranından ekleyin':''}.</small></div></div>
+      ${r.similar.length?`<div class="sec">Benzer seri numaraları</div><div class="inline">${r.similar.map(x=>`<button class="btn sm mono" type="button" data-try="${esc(x.serial)}">${esc(x.serial)}</button>`).join('')}</div>`:''}`;
+    }else{
+      results=`${r.matches.length>1?`<div class="status">Bu seri numarasıyla ${r.matches.length} kayıt var; çağrının ilgili olduğu ürünü seçin.</div>`:''}
+      <div style="display:flex;flex-direction:column;gap:8px">${r.matches.map(x=>`<button type="button" class="prod ${x.warranty==='kapsamda'?'okb':x.warranty==='bitti'?'badb':'warnb'}" data-pick="${x.id}" aria-pressed="${NC.sel?.id===x.id}">
+        <span class="t">${esc([x.brand,x.part_no].filter(Boolean).join(' · ')||'Ürün bilgisi girilmemiş')}</span>
+        <span>${esc(x.description||'')}</span>
+        <span class="status">Firma: <b>${esc(x.firma||'Tanımlanmamış')}</b> · Seri: <span class="mono">${esc(x.serial)}</span>${x.service?' · Yetkili servis: '+esc(x.service):''}</span>
+        <span>${wChip(x.warranty)} <span class="status">${esc(x.warrantyText)}</span></span>
+        ${x.w_info?`<span class="status">Garanti koşulu: ${esc(x.w_info)}</span>`:''}
+        ${x.openTickets.length?`<span><span class="chip warn">Bu üründe açık çağrı var: ${x.openTickets.map(o=>esc(o.no)+' ('+esc(o.stage)+')').join(', ')}</span></span>`:''}
+      </button>`).join('')}</div>`;
+    }
+  }
+  const s=NC.sel, ok=s&&s.warranty==='kapsamda', noinfo=s&&s.warranty==='bilgi_yok';
+  let form='';
+  if(s){
+    const firm=(S.firms||[]).find(f=>f.name===s.firma);
+    form=`${ok?`<div class="verdict ok">✓<div>Ürün garanti kapsamında. Çağrı açılabilir.<small>${esc(s.warrantyText)}</small></div></div>`
+      :noinfo?`<div class="verdict warn">!<div>Bu ürün için garanti tarihleri girilmemiş; garanti doğrulanamadı. Çağrı yine de açılabilir.<small>Tarihleri biliyorsanız önce ürüne girin; çağrıda güncel garanti durumu görünür.</small></div></div>`
+      :`<div class="verdict ${s.warranty==='bitti'?'bad':'warn'}">!<div>${s.warranty==='bitti'?'Ürünün garantisi bitmiş.':'Ürünün garantisi henüz başlamamış.'}
+        <small>${esc(s.warrantyText)}. ${isAdmin()?'Yönetici olarak gerekçe yazıp garanti dışı (ücretli/istisnai) çağrı açabilirsiniz.':'Garanti dışı çağrıyı yalnızca yönetici açabilir. Tarihler yanlışsa aşağıdan düzeltebilirsiniz.'}</small></div></div>`}
+    <div class="inline"><button class="btn sm" type="button" data-invedit="${s.id}" data-from="yeni">Ürün ve garanti bilgilerini düzenle</button></div>
+    ${ok||noinfo||isAdmin()?`<form id="newForm" class="panel"><h3>Çağrı bilgileri</h3><div class="pb fgrid">
+      <label class="f w">Konu<input name="subject" required maxlength="200" placeholder="Örn. Sunucuda disk arızası (HDD failed)"></label>
+      <label class="f w">Arıza tanımı<textarea name="description" rows="4" placeholder="Müşterinin bildirdiği arıza, hata mesajları, log bilgisi…"></textarea></label>
+      <label class="f">Öncelik<select name="priority">${Object.entries(S.meta.priorities).map(([k,v])=>`<option value="${k}" ${k==='normal'?'selected':''}>${v}</option>`).join('')}</select></label>
+      <label class="f">Sorumlu uzman<select name="assignee" required><option value="">Seçin…</option>${S.experts.map(e=>`<option value="${esc(e.username)}">${esc(e.name)}${e.email?'':' (e-postası yok)'}</option>`).join('')}</select></label>
+      <label class="f">İletişim kişisi<input name="contact_name" placeholder="Ad soyad"></label>
+      <label class="f">Müşteri e-postası<input name="contact_email" value="${esc(firm?.emails||'')}" placeholder="ornek@firma.com; ikinci@firma.com"></label>
+      <label class="f">Telefon<input name="contact_phone" value="${esc(firm?.phone||'')}"></label>
+      <label class="f">Konum / adres<input name="location" placeholder="Kurum, bina, oda, raf…"></label>
+      <label class="f">Hedef çözüm tarihi<input type="date" name="sla_due"></label>
+      <div class="status" style="align-self:end">Boş bırakılırsa ayarlardaki iş günü süresi uygulanır.</div>
+      ${ok||noinfo?'':`<label class="f w">Garanti dışı açma gerekçesi<textarea name="override_reason" rows="2" required placeholder="Örn. Ücretli servis teklifi onaylandı (teklif no …)"></textarea></label>`}
+      <div class="w status">Çağrı açıldığında sorumlu uzmana ve müşteri e-postasına bildirim gönderilir.</div>
+      <div class="w inline" style="justify-content:flex-end"><span class="status err" id="ncErr"></span><button class="btn primary" type="submit">${ok||noinfo?'Çağrıyı aç':'Garanti dışı çağrı aç'}</button></div>
+    </div></form>`:''}`;
+  }
+  return`<div class="steps">
+    <div class="panel"><h3>1. Seri numarasını kontrol edin</h3><div class="pb" style="display:flex;flex-direction:column;gap:12px">
+      <form class="check" id="checkForm"><input id="serialIn" value="${esc(NC.serial)}" placeholder="Seri numarası, örn. CZ34226E7T" autocomplete="off" aria-label="Seri numarası" required><button class="btn primary" type="submit">Kontrol et</button></form>
+      ${NC.err?`<div class="status err">${esc(NC.err)}</div>`:''}
+      ${results}
+    </div></div>
+    ${s?`<div style="display:flex;flex-direction:column;gap:12px"><div class="sec">2. Garanti ve çağrı</div>${form}</div>`:''}
+  </div>`;
+}
+async function checkSerial(sn){
+  NC.serial=sn;NC.res=null;NC.sel=null;NC.err='';
+  try{NC.res=await api('GET','/api/envanter/kontrol?seri='+encodeURIComponent(sn));if(NC.res.matches.length===1)NC.sel=NC.res.matches[0]}
+  catch(e){NC.err=e.message}
+  render();
+  if(NC.sel)setTimeout(()=>$('#newForm [name=subject]')?.focus(),0);
+}
+async function submitNew(form){
+  const f=Object.fromEntries(new FormData(form));f.inventory_id=NC.sel.id;
+  const b=form.querySelector('button[type=submit]');b.disabled=true;$('#ncErr').textContent='';
+  try{const r=await api('POST','/api/cagrilar',f);toast(`Çağrı ${r.no} açıldı`);NC.serial='';NC.res=null;NC.sel=null;await loadTickets();location.hash='#cagri-'+r.id}
+  catch(e){$('#ncErr').textContent=e.message;b.disabled=false}
+}
+
+/* ---------------- Çağrı detayı ---------------- */
+async function openTicket(id){S.open=id;await renderTicketDrawer()}
+function closeDrawer(){S.open=null;$('#drawerHost').innerHTML='';if(location.hash.startsWith('#cagri-'))history.replaceState(null,'','#'+S.view)}
+async function renderTicketDrawer(keepScroll){
+  let d;try{d=await api('GET','/api/cagrilar/'+S.open)}catch(e){toast(e.message);closeDrawer();return}
+  const t=d.ticket,W=canEdit(),ro=W?'':'disabled',st=STG();
+  const host=$('#drawerHost');const sc=host.querySelector('.db')?.scrollTop||0;
+  const evs=d.events.slice().reverse();
+  const MS={gonderildi:['ok','Gönderildi'],bekliyor:['blue','Gönderiliyor'],hata:['bad','Hata'],ayar_yok:['warn','E-posta ayarı yok']};
+  host.innerHTML=`<div class="scrim" data-close></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="tTitle">
+    <div class="dh"><div style="flex:1;min-width:0"><div class="status mono">Çağrı ${esc(t.no)} · ${esc(t.source||'')} · açılış ${fmtDT(t.created_at)}${t.created_by?' · '+esc(t.created_by):''}</div>
+      <h2 id="tTitle">${esc(t.subject)}</h2><div class="inline" style="margin-top:4px">${stageChip(t)} ${t.out_of_warranty?'<span class="chip bad">Garanti dışı</span>':wChip(t.warranty_code)} ${late(t)?'<span class="chip bad">Hedef tarih geçti</span>':''}</div></div>
+      <button class="btn" data-close type="button" aria-label="Kapat">✕</button></div>
+    <div class="db">
+      <div class="info">
+        <div><span>Firma</span>${esc(t.firma||'—')}</div>
+        <div><span>Ürün</span>${esc([t.product.brand,t.product.part_no].filter(Boolean).join(' · ')||'—')}<div class="sub">${esc((t.product.description||'').slice(0,90))}</div></div>
+        <div><span>Seri no</span><span class="mono" style="text-transform:none;font-size:13px;color:var(--ink);letter-spacing:0">${esc(t.serial||'—')}</span></div>
+        <div><span>Garanti</span>${esc(t.warranty_text||'—')}</div>
+        ${t.override_reason?`<div><span>Garanti dışı gerekçe</span>${esc(t.override_reason)}</div>`:''}
+        ${d.inventory&&d.inventory.warranty!==t.warranty_code?`<div><span>Güncel garanti</span>${esc(d.inventory.warrantyText)}</div>`:''}
+      </div>
+      <div><div class="sec">Aşama</div><div class="stagebar" role="group" aria-label="Aşama">${S.meta.stages.map(([k,v])=>`<button type="button" data-stg="${k}" aria-pressed="${t.stage===k}" ${ro}>${v}</button>`).join('')}</div></div>
+      <form id="tForm" class="fgrid">
+        <input type="hidden" name="stage" value="${esc(t.stage)}">
+        <label class="f w">Konu<input name="subject" value="${esc(t.subject)}" ${ro}></label>
+        <label class="f">Öncelik<select name="priority" ${ro}>${Object.entries(S.meta.priorities).map(([k,v])=>`<option value="${k}" ${t.priority===k?'selected':''}>${v}</option>`).join('')}</select></label>
+        <label class="f">Sorumlu uzman<select name="assignee" ${ro}><option value="">—</option>${S.experts.map(e=>`<option value="${esc(e.username)}" ${t.assignee===e.username?'selected':''}>${esc(e.name)}</option>`).join('')}${t.assignee&&!S.experts.some(e=>e.username===t.assignee)?`<option value="${esc(t.assignee)}" selected>${esc(t.assignee_name)}</option>`:''}${!t.assignee&&t.assignee_name?`<option value="" selected>${esc(t.assignee_name)} (kullanıcı değil)</option>`:''}</select></label>
+        <label class="f">Hedef çözüm tarihi<input type="date" name="sla_due" value="${esc(t.sla_due||'')}" ${ro}></label>
+        <label class="f">İletişim kişisi<input name="contact_name" value="${esc(t.contact_name||'')}" ${ro}></label>
+        <label class="f">Müşteri e-postası<input name="contact_email" value="${esc(t.contact_email||'')}" ${ro} placeholder="Bildirim gönderilecek adres(ler)"></label>
+        <label class="f">Telefon<input name="contact_phone" value="${esc(t.contact_phone||'')}" ${ro}></label>
+        <label class="f w">Konum<input name="location" value="${esc(t.location||'')}" ${ro}></label>
+        <label class="f w">Arıza tanımı<textarea name="description" rows="3" ${ro}>${esc(t.description||'')}</textarea></label>
+        <div class="w sec">Parça ve lojistik</div>
+        <label class="f">Parça no<input name="part_no" value="${esc(t.part_no||'')}" ${ro}></label>
+        <label class="f">Sipariş no<input name="order_no" value="${esc(t.order_no||'')}" ${ro}></label>
+        <label class="f">RMA / iade no<input name="rma_no" value="${esc(t.rma_no||'')}" ${ro}></label>
+        <label class="f">Kargo takip no<input name="cargo_no" value="${esc(t.cargo_no||'')}" ${ro}></label>
+        <label class="f w">Çözüm açıklaması<textarea name="solution" rows="2" ${ro} placeholder="Yapılan işlem, değiştirilen parça… (çözüldü/kapandı için zorunlu)">${esc(t.solution||'')}</textarea></label>
+        ${W?`<label class="f w">Müşteriye iletilecek açıklama (isteğe bağlı)<textarea name="comment" rows="2" placeholder="Bu güncellemeyle birlikte müşteriye gidecek mesaj"></textarea></label>
+        <label class="chk w"><input type="checkbox" name="notify" checked ${t.contact_email?'':'disabled'}> Değişiklikleri müşteriye e-postayla bildir ${t.contact_email?'':'<span class="status">(müşteri e-postası girilmemiş)</span>'}</label>`:''}
+      </form>
+      ${W?`<div><div class="sec">İç not</div><div class="inline"><textarea id="noteIn" rows="2" style="flex:1;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg)" placeholder="Yalnızca ekip görür; müşteriye gönderilmez"></textarea><button class="btn" type="button" id="noteBtn">Not ekle</button></div></div>`:''}
+      <div><div class="sec">Geçmiş</div><ul class="timeline">${evs.map(e=>`<li class="k-${esc(e.kind)}"><div class="by">${fmtDT(e.at)} · ${esc(e.user)} · ${({olusturuldu:'Oluşturuldu',asama:'Aşama',atama:'Atama',guncelleme:'Güncelleme',yorum:'Müşteriye mesaj',not:'İç not'})[e.kind]||esc(e.kind)}</div>${esc(e.text)}</li>`).join('')}</ul></div>
+      <div><div class="sec">E-postalar (${d.emails.length})</div>${d.emails.length?d.emails.slice().reverse().map(m=>`<details class="mail"><summary><span class="chip ${MS[m.status]?.[0]||''}">${MS[m.status]?.[1]||esc(m.status)}</span> <b>${m.kind==='uzman'?'Uzmana':'Müşteriye'}</b> <span class="sub">${esc(m.to_addr)}</span> <span class="sub">${fmtDT(m.created_at)}</span>
+        ${W&&(m.status==='hata'||m.status==='ayar_yok')?`<button class="btn sm" type="button" data-resend="${m.id}">Tekrar gönder</button>`:''}</summary>
+        ${m.error?`<div class="status err">${esc(m.error)}</div>`:''}<pre><b>${esc(m.subject)}</b>\n\n${esc(m.body)}</pre></details>`).join(''):'<div class="status">Bu çağrı için e-posta gönderilmedi.</div>'}</div>
+    </div>
+    <div class="df"><span class="status" id="tStatus">${W?'':'Yalnızca görüntüleme yetkiniz var.'}</span>${W?'<button class="btn primary" id="tSave" type="button">Kaydet</button>':''}</div>
+  </aside>`;
+  if(keepScroll)host.querySelector('.db').scrollTop=sc;
+  if(location.hash!=='#cagri-'+t.id)history.replaceState(null,'','#cagri-'+t.id);
+}
+async function saveTicket(){
+  const f=Object.fromEntries(new FormData($('#tForm')));f.notify=!!$('#tForm [name=notify]')?.checked;
+  const b=$('#tSave');b.disabled=true;$('#tStatus').textContent='';
+  try{const r=await api('PUT','/api/cagrilar/'+S.open,f);toast(r.unchanged?'Değişiklik yok':'Çağrı güncellendi'+(f.notify&&f.contact_email?'; müşteriye bildirim gönderiliyor':''));await loadTickets();await renderTicketDrawer(true)}
+  catch(e){$('#tStatus').textContent=e.message;$('#tStatus').classList.add('err');b.disabled=false}
+}
+
+/* ---------------- Envanter ---------------- */
+let invData=null;
+async function loadInv(){const i=S.inv;const qs=new URLSearchParams({q:i.q,firma:i.firma,durum:i.durum,offset:i.offset,limit:100});
+  try{invData=await api('GET','/api/envanter?'+qs)}catch(e){toast(e.message)}if(S.view==='envanter')render()}
+function renderInv(){
+  if(!invData)return'<div class="empty">Yükleniyor…</div>';
+  const c=invData.counts,i=S.inv;
+  const ch=[['','Tümü',c.toplam],['kapsamda','Garanti kapsamında',c.kapsamda],['yakinda','90 gün içinde bitiyor',c.yakinda],['bitti','Garantisi bitmiş',c.bitti],['bilgi_yok','Garanti bilgisi yok',c.bilgi_yok]];
+  return`<div class="toolbar"><input type="search" id="iq" placeholder="Seri no, parça no, ürün tanımı, marka ara…" value="${esc(i.q)}" aria-label="Envanterde ara">
+    <select id="iFirma" aria-label="Firma"><option value="">Tüm firmalar</option>${invData.firms.map(f=>`<option value="${esc(f.name||'__yok__')}" ${i.firma===(f.name||'__yok__')?'selected':''}>${esc(f.name||'Tanımlanmamış')} (${f.n})</option>`).join('')}</select>
+    ${canEdit()?'<button class="btn primary" type="button" data-invedit="new">+ Ürün ekle</button>':''}</div>
+  <div class="chips">${ch.map(([k,t,n])=>`<button type="button" data-df="${k}" aria-pressed="${i.durum===k}">${t}<b>${n}</b></button>`).join('')}</div>
+  <div class="tbl-wrap"><table><thead><tr><th>Seri no</th><th>Firma</th><th>Ürün</th><th>Garanti</th><th></th></tr></thead><tbody>
+  ${invData.items.map(x=>`<tr><td class="mono">${esc(x.serial)}</td><td>${esc(x.firma||'Tanımlanmamış')}</td>
+    <td><b>${esc([x.brand,x.part_no].filter(Boolean).join(' · '))}</b><div class="sub">${esc((x.description||'').slice(0,110))}</div></td>
+    <td>${wChip(x.warranty)}<div class="sub">${x.w_start||x.w_end?esc(fmtD(x.w_start)+' – '+fmtD(x.w_end)):''}</div></td>
+    <td class="r"><div class="inline" style="justify-content:flex-end">${canEdit()?`<button class="btn sm" type="button" data-newfor="${esc(x.serial)}">Çağrı aç</button>`:''}${canEdit()?`<button class="btn sm" type="button" data-invedit="${x.id}">Düzenle</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="5" class="status">Eşleşen ürün yok.</td></tr>'}
+  </tbody></table>
+  <div class="pager"><span class="status">${invData.total? (i.offset+1)+'–'+Math.min(i.offset+100,invData.total)+' / '+invData.total:'0'} ürün</span>
+    <button class="btn sm" type="button" data-page="-1" ${i.offset?'':'disabled'}>‹ Önceki</button><button class="btn sm" type="button" data-page="1" ${i.offset+100<invData.total?'':'disabled'}>Sonraki ›</button></div></div>`;
+}
+function invModal(item){
+  const x=item||{firma:'',serial:'',brand:'',part_no:'',description:'',service:'',w_start:'',w_end:'',w_info:''};
+  $('#modalHost').innerHTML=`<div class="scrim" data-mclose></div><div class="modal" role="dialog" aria-modal="true"><form class="box" id="invForm" style="width:min(640px,100%)">
+    <h2>${item?'Ürünü düzenle':'Envantere ürün ekle'}</h2>
+    <div class="fgrid">
+      <label class="f">Seri no<input name="serial" value="${esc(x.serial)}" required></label>
+      <label class="f">Firma / kurum<input name="firma" value="${esc(x.firma)}" list="firmList"><datalist id="firmList">${(invData?.firms||[]).filter(f=>f.name).map(f=>`<option value="${esc(f.name)}">`).join('')}</datalist></label>
+      <label class="f">Marka<input name="brand" value="${esc(x.brand)}"></label>
+      <label class="f">Parça no<input name="part_no" value="${esc(x.part_no)}"></label>
+      <label class="f w">Ürün tanımı<input name="description" value="${esc(x.description)}"></label>
+      <label class="f">Yetkili servis<input name="service" value="${esc(x.service)}"></label>
+      <span></span>
+      <label class="f">Garanti başlangıç<input type="date" name="w_start" value="${esc(x.w_start)}"></label>
+      <label class="f">Garanti bitiş<input type="date" name="w_end" value="${esc(x.w_end)}"></label>
+      <label class="f w">Garanti bilgisi<input name="w_info" value="${esc(x.w_info)}" placeholder="Örn. 5 iş günü içinde bedelsiz onarım"></label>
+    </div>
+    <div class="errbox" id="invErr" hidden></div>
+    <div class="inline" style="justify-content:flex-end"><button class="btn" type="button" data-mclose>Vazgeç</button><button class="btn primary" type="submit">Kaydet</button></div>
+    <input type="hidden" name="_id" value="${item?item.id:''}"></form></div>`;
+}
+
+/* ---------------- Firmalar ---------------- */
+async function loadFirms(){try{S.firms=(await api('GET','/api/firmalar')).firms}catch(e){toast(e.message)}if(S.view==='firmalar')render()}
+function renderFirms(){
+  if(!S.firms)return'<div class="empty">Yükleniyor…</div>';
+  return`<div class="panel"><h3>Firmalar ve bildirim adresleri</h3>
+  <div class="note">Burada girilen e-posta ve telefon, o firmanın ürünü için yeni çağrı açılırken otomatik doldurulur. Birden fazla adresi noktalı virgülle ayırın.</div>
+  <div class="tbl-wrap" style="border:0;border-radius:0"><table><thead><tr><th>Firma</th><th class="r">Ürün</th><th class="r">Aktif çağrı</th><th>Bildirim e-postaları</th><th>Telefon</th><th></th></tr></thead><tbody>
+  ${S.firms.map((f,i)=>`<tr data-firm="${i}"><td><b>${esc(f.name)}</b></td><td class="r num">${f.inventory}</td><td class="r num">${f.openTickets}</td>
+    <td><input data-fk="emails" value="${esc(f.emails)}" ${canEdit()?'':'disabled'} style="width:100%;min-width:220px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)" placeholder="ornek@firma.com"></td>
+    <td><input data-fk="phone" value="${esc(f.phone)}" ${canEdit()?'':'disabled'} style="width:140px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)"></td>
+    <td>${canEdit()?'<button class="btn sm" type="button" data-fsave>Kaydet</button>':''}</td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+
+/* ---------------- Özet ---------------- */
+function renderSummary(){
+  const T=S.tickets,act=T.filter(t=>!t.closed),lt=T.filter(late),month=new Date().toISOString().slice(0,7);
+  const opened=T.filter(t=>(t.created_at||'').startsWith(month)&&t.source==='Uygulama').length,closed=T.filter(t=>(t.closed_at||'').startsWith(month)&&t.source==='Uygulama').length;
+  const by=(arr,f)=>{const o={};arr.forEach(x=>{const k=f(x)||'—';o[k]=(o[k]||0)+1});return Object.entries(o).sort((a,b)=>b[1]-a[1])};
+  const bars=(rows)=>{const m=Math.max(1,...rows.map(r=>r[1]));return rows.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><div class="track"><i style="width:${v/m*100}%"></i></div><b>${v}</b></div>`).join('')||'<div class="note">Kayıt yok.</div>'};
+  const c=invData?.counts;
+  return`<div class="kpis">
+    <div class="kpi"><div class="l">Aktif çağrı</div><div class="v num">${act.length}</div><div class="s">${act.filter(t=>t.priority==='acil').length} acil</div></div>
+    <div class="kpi"><div class="l">Hedef tarihi geçen</div><div class="v num" style="color:${lt.length?'var(--bad)':'inherit'}">${lt.length}</div><div class="s">Aktif ve hedef tarihi geçmiş</div></div>
+    <div class="kpi"><div class="l">Bu ay</div><div class="v num">${opened} / ${closed}</div><div class="s">açılan / kapanan</div></div>
+    <div class="kpi"><div class="l">Garanti kapsamındaki ürün</div><div class="v num">${c?c.kapsamda:'…'}</div><div class="s">${c?`${c.yakinda} tanesinin garantisi 90 gün içinde bitiyor · ${c.bilgi_yok} üründe garanti bilgisi yok`:''}</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>Aktif çağrılar · aşamaya göre</h3><div style="padding:8px 0">${bars(S.meta.stages.filter(([k])=>!S.meta.closed.includes(k)).map(([k,v])=>[v,act.filter(t=>t.stage===k).length]).filter(r=>r[1]))}</div></div>
+    <div class="panel"><h3>Aktif çağrılar · uzmana göre</h3><div style="padding:8px 0">${bars(by(act,t=>t.assignee_name||'Atanmamış'))}</div></div>
+    <div class="panel"><h3>Tüm çağrılar · firmaya göre</h3><div style="padding:8px 0">${bars(by(T,t=>t.firma).slice(0,8))}</div></div>
+    <div class="panel"><h3>Hedef tarihi geçen çağrılar</h3>${lt.length?`<div class="tbl-wrap" style="border:0;border-radius:0"><table><tbody>${lt.map(t=>`<tr class="click" data-tid="${t.id}"><td class="mono">${esc(t.no)}</td><td>${esc(t.subject)}<div class="sub">${esc(t.firma)} · ${esc(t.assignee_name||'—')}</div></td><td class="mono"><span class="chip bad">${fmtD(t.sla_due)}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="note">Hedef tarihi geçen aktif çağrı yok.</div>'}</div>
+  </div>`;
+}
+
+/* ---------------- E-postalar ---------------- */
+let mails=null;
+async function loadMails(){try{mails=(await api('GET','/api/eposta')).emails}catch(e){toast(e.message)}if(S.view==='eposta')render()}
+function renderMails(){
+  if(!mails)return'<div class="empty">Yükleniyor…</div>';
+  const MS={gonderildi:['ok','Gönderildi'],bekliyor:['blue','Gönderiliyor'],hata:['bad','Hata'],ayar_yok:['warn','E-posta ayarı yok']};
+  const pend=mails.filter(m=>m.status==='hata'||m.status==='ayar_yok').length;
+  return`<div class="toolbar"><span class="status">Son 200 bildirim.</span>${pend&&canEdit()?`<button class="btn primary" type="button" id="resendAll">Gönderilemeyen ${pend} e-postayı tekrar gönder</button>`:''}</div>
+  ${mails.some(m=>m.status==='ayar_yok')?`<div class="verdict warn" style="margin-bottom:12px">!<div>E-posta sunucusu tanımlanmadığı için bazı bildirimler gönderilmedi.<small>${isAdmin()?'Sağ üstteki menüden Ayarlar ekranına girip SMTP bilgilerini kaydedin, ardından bu ekrandan tekrar gönderin.':'Yöneticinizden e-posta ayarlarını yapmasını isteyin.'}</small></div></div>`:''}
+  <div class="tbl-wrap"><table><thead><tr><th>Tarih</th><th>Çağrı</th><th>Alıcı</th><th>Konu</th><th>Durum</th></tr></thead><tbody>
+  ${mails.map(m=>`<tr class="click" data-tid="${m.ticket_id}"><td class="sub">${fmtDT(m.created_at)}</td><td class="mono">${esc(m.no||'')}</td><td>${m.kind==='uzman'?'Uzman':'Müşteri'}<div class="sub">${esc(m.to_addr)}</div></td><td>${esc(m.subject)}${m.error?`<div class="status err">${esc(m.error)}</div>`:''}</td><td><span class="chip ${MS[m.status]?.[0]||''}">${MS[m.status]?.[1]||esc(m.status)}</span></td></tr>`).join('')||'<tr><td colspan="5" class="status">Henüz e-posta yok.</td></tr>'}
+  </tbody></table></div>`;
+}
+
+/* ---------------- Ayarlar ---------------- */
+let sett=null;
+async function loadSettings(){try{sett=await api('GET','/api/ayarlar')}catch(e){toast(e.message)}if(S.view==='ayarlar')render()}
+function renderSettings(){
+  if(!sett)return'<div class="empty">Yükleniyor…</div>';
+  const s=sett.settings,v=k=>esc(s[k]||''),ck=k=>s[k]==='1'?'checked':'';
+  return`<form id="setForm" class="steps">
+  <div class="panel"><h3>E-posta sunucusu (SMTP)</h3><div class="pb fgrid">
+    <label class="f">Sunucu<input name="smtp_host" value="${v('smtp_host')}" placeholder="smtp.office365.com"></label>
+    <label class="f">Port<input name="smtp_port" value="${v('smtp_port')}" inputmode="numeric"></label>
+    <label class="f">Güvenlik<select name="smtp_security">${[['starttls','STARTTLS (587)'],['ssl','SSL/TLS (465)'],['none','Yok (iç ağ rölesi)']].map(([k,t])=>`<option value="${k}" ${s.smtp_security===k?'selected':''}>${t}</option>`).join('')}</select></label>
+    <label class="f">Kullanıcı adı<input name="smtp_user" value="${v('smtp_user')}" autocomplete="off"></label>
+    <label class="f">Şifre<input name="smtp_password" type="password" autocomplete="new-password" placeholder="${s.smtp_password_set?'Kayıtlı (değiştirmek için yazın)':''}"></label>
+    <label class="f">Gönderen adres<input name="from_addr" value="${v('from_addr')}" placeholder="servis@ekspa.com.tr"></label>
+    <label class="f">Gönderen adı<input name="from_name" value="${v('from_name')}"></label>
+    <label class="f">Yanıt adresi (isteğe bağlı)<input name="reply_to" value="${v('reply_to')}"></label>
+    <div class="w status">Microsoft 365 için: sunucu smtp.office365.com, port 587, STARTTLS; gönderen posta kutusunda “SMTP AUTH” etkin olmalı.</div>
+  </div></div>
+  <div class="panel"><h3>Bildirimler ve süreler</h3><div class="pb fgrid">
+    <label class="f">Şirket adı<input name="company" value="${v('company')}"></label>
+    <label class="f">Hedef çözüm süresi (iş günü)<input name="sla_days" value="${v('sla_days')}" inputmode="numeric"></label>
+    <label class="f w">Uygulama adresi (uzman e-postalarındaki bağlantı için)<input name="base_url" value="${v('base_url')}" placeholder="https://cagri.ekspa.com.tr"></label>
+    <label class="f w">E-posta imzası<textarea name="signature" rows="3">${v('signature')}</textarea></label>
+    <label class="chk w"><input type="checkbox" name="notify_expert" ${ck('notify_expert')}> Çağrı açıldığında / atandığında uzmana e-posta gönder</label>
+    <label class="chk w"><input type="checkbox" name="notify_customer_open" ${ck('notify_customer_open')}> Çağrı açıldığında müşteriye e-posta gönder</label>
+    <label class="chk w"><input type="checkbox" name="notify_customer_update" ${ck('notify_customer_update')}> Çağrı bilgisi değiştiğinde müşteriye e-posta gönder</label>
+  </div></div>
+  <div class="inline"><button class="btn primary" type="submit">Ayarları kaydet</button><span class="status" id="setMsg"></span></div>
+  <div class="panel"><h3>Test e-postası</h3><div class="pb inline"><input id="testTo" type="email" placeholder="alici@ekspa.com.tr" value="${esc(S.me.email||'')}" style="flex:1;min-width:220px"><button class="btn" type="button" id="testBtn">Test gönder</button><span class="status" id="testMsg"></span></div>
+    <div class="note">Önce ayarları kaydedin. Durum: ${Object.entries(sett.mailCounts).map(([k,n])=>`${({gonderildi:'gönderildi',bekliyor:'gönderiliyor',hata:'hata',ayar_yok:'ayar bekliyor'})[k]||k}: ${n}`).join(' · ')||'henüz e-posta yok'}</div></div>
+  </form>`;
+}
+
+/* ---------------- Kullanıcılar ---------------- */
+const CRM_T={'':'Erişim yok',goruntuleyici:'Görüntüleyici',duzenleyici:'Düzenleyici'},SRV_T={'':'Erişim yok',goruntuleyici:'Görüntüleyici',uzman:'Uzman'};
+async function loadUsers(){try{S.users=(await api('GET','/api/kullanicilar')).users}catch(e){toast(e.message)}if(S.view==='kullanicilar')render()}
+function renderUsers(){
+  const ro=(T,sel)=>Object.keys(T).map(r=>`<option value="${r}" ${r===sel?'selected':''}>${T[r]}</option>`).join('');
+  return`<div class="steps" style="max-width:none">
+  <div class="panel"><h3>Yeni kullanıcı</h3><form class="pb fgrid" id="newUser" autocomplete="off" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end">
+    <label class="f">Ad soyad<input name="name" required></label>
+    <label class="f">Kullanıcı adı<input name="username" required autocapitalize="none" placeholder="dogan.aydin"></label>
+    <label class="f">E-posta<input name="email" type="email" placeholder="Çağrı bildirimleri için"></label>
+    <label class="f">Satış<select name="crm_role">${ro(CRM_T,'')}</select></label>
+    <label class="f">Teknik Servis<select name="servis_role">${ro(SRV_T,'uzman')}</select></label>
+    <label class="chk"><input type="checkbox" name="admin" value="1"> Yönetici</label>
+    <label class="f">Geçici şifre<input name="password" required placeholder="8+ karakter, harf + rakam"></label>
+    <button class="btn primary" type="submit">Ekle</button></form>
+    <div class="note"><b>Yönetici</b>: iki bölümde de tam yetki, garanti dışı çağrı, ayarlar ve kullanıcılar · <b>Satış Düzenleyici</b>: fırsat ve proje ekler/düzenler · <b>Servis Uzmanı</b>: çağrı açar, günceller, envanteri düzenler, çağrı atanabilir · <b>Görüntüleyici</b>: o bölümü yalnızca görür. Odoo'dan gelen çağrılardaki uzman adı, aynı ad soyadla eklenen kullanıcıya otomatik bağlanır.</div></div>
+  <div class="panel"><h3>Kullanıcılar</h3><div class="tbl-wrap" style="border:0;border-radius:0"><table><thead><tr><th>Kullanıcı</th><th>E-posta</th><th>Yönetici</th><th>Satış</th><th>Teknik Servis</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>
+  ${(S.users||[]).map(u=>`<tr data-user="${esc(u.username)}"><td><b>${esc(u.name)}</b><div class="sub">${esc(u.username)}${u.mustChange?' · ilk girişte şifre değiştirecek':''}</div></td>
+    <td><div class="inline"><input data-email value="${esc(u.email)}" style="width:210px"><button class="btn sm" type="button" data-uact="email">Kaydet</button></div></td>
+    <td><input type="checkbox" data-uact="admin" aria-label="Yönetici" ${u.admin?'checked':''} ${u.username===S.me.username?'disabled':''}></td>
+    <td><select data-uact="crm" aria-label="Satış yetkisi" ${u.admin?'disabled':''}>${ro(CRM_T,u.crm_role)}</select></td>
+    <td><select data-uact="srv" aria-label="Servis yetkisi" ${u.admin?'disabled':''}>${ro(SRV_T,u.servis_role)}</select></td>
+    <td>${u.active?'Etkin':'<span class="chip">Kapalı</span>'}</td>
+    <td><div class="inline"><button class="btn sm" type="button" data-uact="reset">Şifre sıfırla</button>${u.username===S.me.username?'':`<button class="btn sm ${u.active?'danger':''}" type="button" data-uact="toggle">${u.active?'Devre dışı bırak':'Etkinleştir'}</button>`}</div>
+      <div class="inline" data-reset hidden style="margin-top:6px"><input data-newpw placeholder="Geçici şifre"><button class="btn sm primary" type="button" data-uact="resetSave">Kaydet</button></div></td></tr>`).join('')}
+  </tbody></table></div></div></div>`;
+}
+async function userAction(t,e){
+  const tr=t.closest('tr[data-user]'),un=tr.dataset.user,u=S.users.find(x=>x.username===un),act=t.dataset.uact;
+  if(act==='reset'){tr.querySelector('[data-reset]').hidden=false;tr.querySelector('[data-newpw]').focus();return}
+  try{
+    if(act==='email')await api('PUT','/api/kullanicilar/'+un,{email:tr.querySelector('[data-email]').value});
+    if(act==='resetSave')await api('PUT','/api/kullanicilar/'+un,{password:tr.querySelector('[data-newpw]').value});
+    if(act==='toggle')await api('PUT','/api/kullanicilar/'+un,{active:!u.active});
+    if(act==='admin'&&e.type==='change')await api('PUT','/api/kullanicilar/'+un,{admin:t.checked});
+    if(act==='crm'&&e.type==='change')await api('PUT','/api/kullanicilar/'+un,{crm_role:t.value});
+    if(act==='srv'&&e.type==='change')await api('PUT','/api/kullanicilar/'+un,{servis_role:t.value});
+    toast('Kaydedildi');
+  }catch(x){toast(x.message)}
+  await loadUsers();await loadExperts();
+}
+
+/* ---------------- Ortak ---------------- */
+function pwModal(forced){
+  $('#modalHost').innerHTML=`<div class="scrim" ${forced?'':'data-mclose'}></div><div class="modal" role="dialog" aria-modal="true"><form class="box" id="pwForm">
+    <h2>${forced?'Yeni şifrenizi belirleyin':'Şifremi değiştir'}</h2>${forced?'<div class="status">Yönetici size geçici bir şifre verdi. Devam etmek için kendi şifrenizi belirleyin.</div>':''}
+    <label class="f">Mevcut şifre<input type="password" name="old" required autocomplete="current-password"></label>
+    <label class="f">Yeni şifre<input type="password" name="new" required autocomplete="new-password"></label>
+    <label class="f">Yeni şifre (tekrar)<input type="password" name="new2" required autocomplete="new-password"></label>
+    <div class="errbox" id="pwErr" hidden></div>
+    <div class="inline" style="justify-content:flex-end">${forced?'':'<button class="btn" type="button" data-mclose>Vazgeç</button>'}<button class="btn primary" type="submit">Kaydet</button></div></form></div>`;
+  $('#pwForm input').focus();
+}
+async function loadTickets(){try{const j=await api('GET','/api/cagrilar');S.tickets=j.tickets;S.rev=j.rev}catch(e){if(e.code!==401)toast(e.message)}}
+async function loadExperts(){try{S.experts=(await api('GET','/api/uzmanlar')).uzmanlar}catch{}}
+function render(){
+  document.querySelectorAll('.tabs a').forEach(a=>a.dataset.v===S.view?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  const v=S.view,m=$('#main');
+  const html=v==='yeni'?renderNew():v==='envanter'?renderInv():v==='firmalar'?renderFirms():v==='ozet'?renderSummary():v==='eposta'?renderMails():v==='ayarlar'?renderSettings():v==='kullanicilar'?renderUsers():renderTickets();
+  const focus=document.activeElement?.id, pos=document.activeElement?.selectionStart;
+  m.innerHTML=html;
+  if(focus&&['tq','iq'].includes(focus)){const el=$('#'+focus);el?.focus();try{el.setSelectionRange(pos,pos)}catch{}}
+}
+function route(){
+  const h=location.hash.slice(1);
+  if(h.startsWith('cagri-')){if(!['cagrilar','ozet','eposta'].includes(S.view))S.view='cagrilar';render();openTicket(+h.slice(6));return}
+  const views=['yeni','cagrilar','envanter','firmalar','ozet','eposta'].concat(isAdmin()?['ayarlar','kullanicilar']:[]);
+  S.view=views.includes(h)?h:'cagrilar';
+  if(S.open)closeDrawer();
+  if(S.view==='envanter'||S.view==='ozet')loadInv();
+  if(S.view==='firmalar'||S.view==='yeni')loadFirms();
+  if(S.view==='eposta')loadMails();
+  if(S.view==='ayarlar')loadSettings();
+  if(S.view==='kullanicilar')loadUsers();
+  render();
+  if(S.view==='yeni')setTimeout(()=>{if(!NC.sel)$('#serialIn')?.focus()},0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------------- Olaylar ---------------- */
+let qT;
+document.addEventListener('input',e=>{
+  if(e.target.id==='tq'){S.q=e.target.value;render()}
+  if(e.target.id==='iq'){clearTimeout(qT);qT=setTimeout(()=>{S.inv.q=e.target.value;S.inv.offset=0;loadInv()},250)}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='tExp'){S.expF=t.value;render()}
+  if(t.id==='tFirma'){S.firmaF=t.value;render()}
+  if(t.id==='iFirma'){S.inv.firma=t.value;S.inv.offset=0;loadInv()}
+  if(t.matches('select[data-uact],input[type=checkbox][data-uact]'))userAction(t,e);
+});
+document.addEventListener('submit',async e=>{
+  const f=e.target;e.preventDefault();
+  if(f.id==='checkForm'){const v=$('#serialIn').value.trim();if(v)checkSerial(v)}
+  if(f.id==='newForm')submitNew(f);
+  if(f.id==='invForm'){const d=Object.fromEntries(new FormData(f));const id=d._id;delete d._id;
+    try{await api(id?'PUT':'POST','/api/envanter'+(id?'/'+id:''),d);$('#modalHost').innerHTML='';toast('Ürün kaydedildi');if(S.view==='yeni'&&NC.serial){const keep=NC.sel?.id;await checkSerial(NC.serial);if(keep){NC.sel=NC.res?.matches.find(x=>x.id===keep)||NC.sel;render()}}else loadInv()}catch(x){$('#invErr').textContent=x.message;$('#invErr').hidden=false}}
+  if(f.id==='setForm'){const d=Object.fromEntries(new FormData(f));['notify_expert','notify_customer_open','notify_customer_update'].forEach(k=>d[k]=f.querySelector(`[name=${k}]`).checked?'1':'0');
+    try{await api('PUT','/api/ayarlar',d);$('#setMsg').textContent='Kaydedildi.';loadSettings()}catch(x){$('#setMsg').textContent=x.message}}
+  if(f.id==='newUser'){const d=Object.fromEntries(new FormData(f));d.admin=!!d.admin;try{await api('POST','/api/kullanicilar',d);toast('Kullanıcı eklendi');await loadUsers();await loadExperts();await loadTickets()}catch(x){toast(x.message)}}
+  if(f.id==='pwForm'){const d=Object.fromEntries(new FormData(f));const eb=$('#pwErr');eb.hidden=true;
+    if(d.new!==d.new2){eb.textContent='Yeni şifreler aynı değil.';eb.hidden=false;return}
+    try{await api('POST','/api/me/sifre',{old:d.old,new:d.new});const was=S.me.mustChange;S.me.mustChange=false;$('#modalHost').innerHTML='';toast('Şifreniz değiştirildi');if(was)location.reload()}catch(x){eb.textContent=x.message;eb.hidden=false}}
+});
+document.addEventListener('click',async e=>{
+  const t=e.target;
+  if(t.closest('#userBtn')){const m=$('#userMenu');m.hidden=!m.hidden;$('#userBtn').setAttribute('aria-expanded',!m.hidden);return}
+  if(!t.closest('#userMenu'))$('#userMenu').hidden=true;
+  if(t.closest('#userMenu a'))$('#userMenu').hidden=true;
+  const ma=t.closest('[data-act]');if(ma){$('#userMenu').hidden=true;if(ma.dataset.act==='pw')pwModal(false);if(ma.dataset.act==='logout'){try{await api('POST','/api/logout')}catch{}location.href='/giris'}return}
+  if(t.closest('[data-mclose]')){$('#modalHost').innerHTML='';return}
+  if(t.closest('[data-close]'))return closeDrawer();
+  const sf=t.closest('[data-sf]');if(sf){S.stageF=sf.dataset.sf;return render()}
+  const df=t.closest('[data-df]');if(df){S.inv.durum=df.dataset.df;S.inv.offset=0;return loadInv()}
+  const pg=t.closest('[data-page]');if(pg){S.inv.offset=Math.max(0,S.inv.offset+100*(+pg.dataset.page));return loadInv()}
+  const tr=t.closest('[data-try]');if(tr){$('#serialIn').value=tr.dataset.try;return checkSerial(tr.dataset.try)}
+  const pk=t.closest('[data-pick]');if(pk){NC.sel=NC.res.matches.find(x=>x.id===+pk.dataset.pick);render();setTimeout(()=>$('#newForm [name=subject]')?.focus(),0);return}
+  const nf=t.closest('[data-newfor]');if(nf){location.hash='#yeni';setTimeout(()=>checkSerial(nf.dataset.newfor),0);return}
+  const ie=t.closest('[data-invedit]');if(ie){invModal(ie.dataset.invedit==='new'?null:ie.dataset.from==='yeni'?NC.sel:invData.items.find(x=>x.id===+ie.dataset.invedit));return}
+  const fs=t.closest('[data-fsave]');if(fs){const row=fs.closest('tr');const f=S.firms[+row.dataset.firm];
+    try{await api('PUT','/api/firmalar',{name:f.name,emails:row.querySelector('[data-fk=emails]').value,phone:row.querySelector('[data-fk=phone]').value,note:f.note});toast('Firma kaydedildi');loadFirms()}catch(x){toast(x.message)}return}
+  const sg=t.closest('[data-stg]');if(sg&&!sg.disabled){$('#tForm [name=stage]').value=sg.dataset.stg;document.querySelectorAll('[data-stg]').forEach(b=>b.setAttribute('aria-pressed',b===sg));return}
+  if(t.closest('#tSave'))return saveTicket();
+  if(t.closest('#noteBtn')){const v=$('#noteIn').value.trim();if(!v)return;try{await api('POST',`/api/cagrilar/${S.open}/yorum`,{text:v,public:false});toast('Not eklendi');renderTicketDrawer(true)}catch(x){toast(x.message)}return}
+  const rs=t.closest('[data-resend]');if(rs){e.preventDefault();try{await api('POST',`/api/eposta/${rs.dataset.resend}/tekrar`);toast('Tekrar gönderiliyor');setTimeout(()=>renderTicketDrawer(true),1500)}catch(x){toast(x.message)}return}
+  if(t.closest('#resendAll')){try{const r=await api('POST','/api/eposta/bekleyenler');toast(`${r.n} e-posta kuyruğa alındı`);setTimeout(loadMails,1500)}catch(x){toast(x.message)}return}
+  if(t.closest('#testBtn')){$('#testMsg').textContent='Gönderiliyor…';try{await api('POST','/api/ayarlar/test',{to:$('#testTo').value});$('#testMsg').textContent='Gönderildi. Gelen kutunuzu kontrol edin.'}catch(x){$('#testMsg').textContent=x.message}return}
+  const ua=t.closest('[data-uact]');if(ua&&!ua.matches('select,input[type=checkbox]'))return userAction(ua,e);
+  const row=t.closest('[data-tid]');if(row&&!t.closest('.drawer')){location.hash='#cagri-'+row.dataset.tid;return}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if($('#modalHost').innerHTML&&$('[data-mclose]'))$('#modalHost').innerHTML='';else if(S.open)closeDrawer();$('#userMenu').hidden=true}
+  if(e.key==='Enter'&&e.target.matches('tr[data-tid]'))location.hash='#cagri-'+e.target.dataset.tid;
+});
+
+/* ---------------- Başlangıç ---------------- */
+let pollT;
+async function start(){
+  await Promise.all([loadTickets(),loadExperts(),loadFirms()]);
+  route();
+  clearInterval(pollT);
+  pollT=setInterval(async()=>{if(document.hidden)return;try{const {rev}=await api('GET','/api/rev');if(rev!==S.rev){await loadTickets();if(['cagrilar','ozet'].includes(S.view)&&!document.activeElement?.closest('form'))render();if(S.view==='eposta')loadMails()}}catch{}},6000);
+}
+(async function boot(){
+  try{S.me=await api('GET','/api/me')}catch{return}
+  $('#meName').textContent=S.me.name;$('#meFull').textContent=S.me.name;$('#meRole').textContent=S.me.roleName+' · '+S.me.username;$('#meAv').textContent=initials(S.me.name);
+  modSwitch('servis');
+  if(isAdmin())document.querySelectorAll('.adm').forEach(a=>a.hidden=false);
+  if(!canEdit())document.querySelector('.tabs a.new').hidden=true;
+  if(S.me.mustChange){pwModal(true);$('#main').innerHTML='<div class="empty">Devam etmek için yeni şifrenizi belirleyin.</div>';return}
+  if(!S.me.servisLevel){if(S.me.crmLevel){location.href='/satis';return}$('#main').innerHTML='<div class="empty">Henüz hiçbir bölüme erişim yetkiniz yok. Yöneticinizden yetki isteyin.</div>';return}
+  S.meta=await api('GET','/api/meta');
+  start();
+})();
+</script>
+</body>
+</html>

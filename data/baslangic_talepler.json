@@ -1,0 +1,682 @@
+[
+ {
+  "no": "00088",
+  "priority": "acil",
+  "subject": "End User reports Fan has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00086",
+  "priority": "acil",
+  "subject": "End User reports DS3524 has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00084",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00083",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00082",
+  "priority": "acil",
+  "subject": "ARIZA",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00080",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00077",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00076",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00075",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00074",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00073",
+  "priority": "acil",
+  "subject": "Arıza",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00071",
+  "priority": "acil",
+  "subject": "End User reports Fan has fail",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00070",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00069",
+  "priority": "acil",
+  "subject": "Sag Rail Kit arızalı",
+  "assignee_name": "Doğan Aydın",
+  "firma": "LEONARDO TURKEY HAVACILIK SAVUNMA VE GUVENLIK SISTEMLERI ANONIM SIRKETI",
+  "contact_name": "",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00068",
+  "priority": "acil",
+  "subject": "Cache Module  ve batarya arızası",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00067",
+  "priority": "acil",
+  "subject": "End User reports Two RAMs have failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00065",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00064",
+  "priority": "acil",
+  "subject": "Cache Batary arızası",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00063",
+  "priority": "acil",
+  "subject": "Fan Arızası",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00062",
+  "priority": "acil",
+  "subject": "MTZ SAP01 sunucusu Cache Modül Arızası",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00060",
+  "priority": "acil",
+  "subject": "MGS CAD01 Sunucusu Cache modül sensör arızası",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00058",
+  "priority": "acil",
+  "subject": "[MTZ] BLD-PLT01 Alert Light Problem:",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00057",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00055",
+  "priority": "acil",
+  "subject": "SFP leri ve fiberleri görmüyor",
+  "assignee_name": "Doğan Aydın",
+  "firma": "LEONARDO TURKEY HAVACILIK SAVUNMA VE GUVENLIK SISTEMLERI ANONIM SIRKETI",
+  "contact_name": "",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00054",
+  "priority": "acil",
+  "subject": "End User reports Power Supply has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00053",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00052",
+  "priority": "acil",
+  "subject": "End User reports 3D Glasses has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00051",
+  "priority": "acil",
+  "subject": "End User reports 3D Glasses has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00050",
+  "priority": "acil",
+  "subject": "End User reports AMM Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00049",
+  "priority": "acil",
+  "subject": "End User reports Fan has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00048",
+  "priority": "acil",
+  "subject": "End User reports CPU Fan has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00047",
+  "priority": "acil",
+  "subject": "End User reports Power Supply has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00046",
+  "priority": "acil",
+  "subject": "End User reports IPS BLADECENTER H has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00045",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00044",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00043",
+  "priority": "acil",
+  "subject": "End User reports KVM Console Switch has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00042",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00041",
+  "priority": "acil",
+  "subject": "End User reports RAM has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00040",
+  "priority": "acil",
+  "subject": "End User reports 4 HDD have failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00039",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00038",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00037",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00036",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00034",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00032",
+  "priority": "acil",
+  "subject": "GGS CMS MFS FAN - HP Request",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00031",
+  "priority": "acil",
+  "subject": "DISK MODEL: 10K SAS DS 1.2TB",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00030",
+  "priority": "acil",
+  "subject": "End User reports SSD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00027",
+  "priority": "acil",
+  "subject": "End User reports HBA has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00025",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00023",
+  "priority": "acil",
+  "subject": "End User reports Ram has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00022",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00019",
+  "priority": "acil",
+  "subject": "End User reports PSU has failed",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00018",
+  "priority": "acil",
+  "subject": "End User reports RAID Controller has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00017",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00016",
+  "priority": "acil",
+  "subject": "End User reports Fan has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00015",
+  "priority": "acil",
+  "subject": "End User reports CPU FAN has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00014",
+  "priority": "acil",
+  "subject": "End User reports FAN has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00013",
+  "priority": "acil",
+  "subject": "End User reports FAN has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00012",
+  "priority": "acil",
+  "subject": "End User reports FAN has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00011",
+  "priority": "acil",
+  "subject": "End User reports RAID controller has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00010",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00009",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00008",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00007",
+  "priority": "acil",
+  "subject": "End User reports Cache Module has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00006",
+  "priority": "acil",
+  "subject": "End User reports HDD has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00005",
+  "priority": "acil",
+  "subject": "End User reports Fan has failed.",
+  "assignee_name": "Doğan Aydın",
+  "firma": "Türk Havacılık ve Uzay Sanayii A.Ș.",
+  "contact_name": "Ahmet Meriç Ünal",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00001",
+  "priority": "acil",
+  "subject": "SDT - Sunucu kurulum",
+  "assignee_name": "Doğan Aydın",
+  "firma": "SDT UZAY VE SAVUNMA TEKNOLOJILERI ANONIM SIRKETI",
+  "contact_name": "",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ },
+ {
+  "no": "00035",
+  "priority": "dusuk",
+  "subject": "BCM957404A4041 arızalı",
+  "assignee_name": "Levent Dinçer",
+  "firma": "LEONARDO TURKEY HAVACILIK SAVUNMA VE GUVENLIK SISTEMLERI ANONIM SIRKETI",
+  "contact_name": "",
+  "stage": "cozuldu",
+  "odoo_stage": "Çözüldü"
+ }
+]

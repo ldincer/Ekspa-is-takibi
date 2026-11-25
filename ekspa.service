@@ -1,0 +1,12 @@
+[Unit]
+Description=Ekspa İş Takibi (Satış + Teknik Servis)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/ekspa
+ExecStart=/usr/bin/python3 /opt/ekspa/app.py --port 8080
+Restart=on-failure
+User=ekspa
+
+[Install]
+WantedBy=multi-user.target
